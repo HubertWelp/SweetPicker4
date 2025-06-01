@@ -1,0 +1,18 @@
+build/
+devel/
+logs/
+install/
+build*/
+
+# SP4Objekterkenner specific
+SP4Objekterkenner/venv_SP4Objekterkenner/
+SP4Objekterkenner/trained-inference-graphs/
+SP4Objekterkenner/sweet_detector.pt
+
+
+Trainingsdaten-bunt/
+Trainingsdaten-grau/
+
+# QtCreator stuff
+*.pro.user.*
+*.pro.user
