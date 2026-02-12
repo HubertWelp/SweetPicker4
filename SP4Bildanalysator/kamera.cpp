@@ -4,7 +4,7 @@ Kamera::Kamera(const char* pfad)
 {
     pwd = pfad;
     id = 0;
-    videostream = cv::VideoCapture (id); // 0 = standardkamera
+///    videostream = cv::VideoCapture (id); // 0 = standardkamera
 }
 /**
  * @brief Kamera::nehmeAuf
@@ -16,33 +16,42 @@ int Kamera::nehmeAuf(const char* pfad)
     // Das Zielpfad konstruieren
     //cv::String ziel = cv::String (pwd) + cv::String(pfad);
     cv::String ziel = cv::String(pfad);
-    // Ein Bild mit der Kamera aufnehmen
-    /** videostream.open() first calls videostream.release() **/
+
+    // Open camera for this shot
     if(!videostream.open(id))
     {
-        printf("Kamera konnte nicht geoeffnet werden\n");
+        std::cerr << "Kamera konnte nicht geoeffnet werden (ID )" << id << ")\n";
         return -1;
     }
 
+    // Request resolution (camera / backend may ignore!)
+    videostream.set(cv::CAP_PROP_FRAME_WIDTH,frame_width_);
+    videostream.set(cv::CAP_PROP_FRAME_HEIGHT,frame_height_);
 
-    bool bSuccess;
-    int FramesSkipped = 10;
-    for (int a = 0; a < FramesSkipped; a++)
-        bSuccess = videostream.grab();
-
+    // small warmup delay and discard some frames
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    bool grapped_any=false;
+    for (int i = 0; i < warmup_frames_; ++i)
+    {
+        if(videostream.grab())
+          grapped_any = true;
+  }
 
     /** grabs, decodes and returns the next video frame **/
-    if(!videostream.read(bild))
+    if(!videostream.read(bild) || bild.empty())
     {
-        printf("Bild konnte nicht erfasst werden\n");
+        std::cerr << "Bild konnte nicht erfasst werden\n";
+        videostream.release();
         return -2;
     }
     // Das Bild im angegebenen Pfad Speichern
     if( !cv::imwrite(ziel,bild) )
     {
-        printf("Bild konnte nicht am Ziel gespeichert werden\n");
+        std::cerr << "Bild konnte nicht am Ziel gespeichert werden\n";
+        videostream.release();
         return -3;
     }
+
     videostream.release();
     return 0;
 }
@@ -67,17 +76,29 @@ void Kamera::nehmeAufTest(const char *pfad)
  */
 int Kamera::setzeKameraID(int idnew)
 {
-    if(!videostream.open(idnew))
-    {
-        std::cout << idnew << " ist keine gültige Kamera" << std::endl;
-        return -1;
-    }
-    else
-    {
-        /*Erzeuge neue Kamera mit neuer ID*/
-        videostream.~VideoCapture();
-        videostream = cv::VideoCapture (idnew);
-        id = idnew;
-        return 0;
-    }
+  // Probe first to avoid breaking the existing camera if new ID is invalid.
+  cv::VideoCapture probe;
+  if (!probe.open(idnew, backend_)) {
+    std::cout << idnew << " ist keine gültige Kamera" << std::endl;
+    return -1;
+  }
+
+  // Apply same requested settings to the probe
+  probe.set(cv::CAP_PROP_FRAME_WIDTH, frame_width_);
+  probe.set(cv::CAP_PROP_FRAME_HEIGHT, frame_height_);
+
+  // Warmup the probe a little
+  std::this_thread::sleep_for(std::chrono::milliseconds(200));
+  for (int i = 0; i < warmup_frames_; ++i) {
+    probe.grab();
+  }
+
+  // Switch safely (no manual destructor!)
+  if (videostream.isOpened()) {
+    videostream.release();
+  }
+  videostream = std::move(probe);
+  id = idnew;
+
+  return 0;
 }

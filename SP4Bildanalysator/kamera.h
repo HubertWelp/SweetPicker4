@@ -16,6 +16,12 @@ private:
     cv::Mat bild;
     const char* pwd;
     int id;
+
+    // Tunables
+    int warmup_frames_ = 10;
+    int frame_width_ = 640;
+    int frame_height_ = 480;
+    int backend_ = cv::CAP_ANY;
 };
 
 #endif // KAMERA_H
