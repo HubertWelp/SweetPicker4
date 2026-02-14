@@ -106,16 +106,22 @@ void Verwalter::messageReceived(std::string msg)
         char* pfad = new char [256];
         strcpy(pfad,ressourcen::PWD.c_str());
         strcat(pfad,BILD);
-        cam->setzeKameraID(konfig->getKameraID());
+        if(cam->setzeKameraID(konfig->getKameraID())!=0)
+        {
+            string ergebnis="fehler";
+            std::cout << ergebnis << std::endl;
+            sendmessage(ergebnis,ipAdressSPKoordinator,5843);
+            return;
+        }
         cam->nehmeAuf(pfad);
-        //cam->nehmeAufTest(pfad);
+//        cam->nehmeAufTest(pfad);
         delete [] pfad;
         // Ein Python-Skript vom SP3Objekterkenner ausführen (python programmname TEXTABLAGE wahl)
         fuehreSkriptAus();
         // warten, bis SP3Objektereknner  fertig ist
         if(warte())
         {
-            // Erkennungsergebnis einlesen und auswerten
+            // Erkennungsergebnis einlesen und auswertenes
             int erg = textAuswerter->liesEin(QString(QString::fromStdString(ressourcen::PWD))+QString(TEXTABLAGE));
             //std::cout << erg << std::endl;
             if(erg == 3)

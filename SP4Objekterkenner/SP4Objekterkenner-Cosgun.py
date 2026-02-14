@@ -7,7 +7,6 @@ aber die YOLO-Architektur für die Objekterkennung anstelle der TensorFlow Objec
 
 @author: Sahin Cosgun
 @date: April 2025
-@editor: Mohamed Aziz Mansour
 """
 
 import os
@@ -30,12 +29,11 @@ logger = logging.getLogger("SP4Objekterkenner")
 
 # Class mapping from YOLO model names to original model IDs
 CLASS_MAPPING = {
-    "maoam": 1,
-    "snickers": 2,
-    "milkyway": 3,
-    "riegel": 4,
+    "Maoam": 1,
+    "Snickers": 2,
+    "MilkyWay": 3,
+    "SchokoMilchRiegel": 4,
 }
-
 
 # Network configuration
 UDP_IP_ADDRESS = "127.0.0.1"
@@ -48,7 +46,9 @@ IMAGE_PATH_DETECTED = os.path.join(FILE_PATH, "gefundeneObjekte.jpg")
 TEXT_PATH_DETECTED = os.path.join(FILE_PATH, "gefundeneObjekte.txt")
 
 # Path to YOLO model
-MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "best_yolo11s.pt")
+MODEL_PATH = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "sweet_detector.pt"
+)
 
 
 def load_model():
@@ -91,7 +91,7 @@ def run_detection(model, image_path):
             return None
 
         # Run inference
-        results = model(image, conf=0.5, verbose=False)[0]
+        results = model(image, verbose=False)[0]
 
         # Create detections object for visualization
         detections = sv.Detections.from_ultralytics(results)
@@ -125,9 +125,8 @@ def run_detection(model, image_path):
             )
         ):
             # Get class name and map to standardized IDs
-            class_name = results.names[int(cls)].lower()
-            print("Klasse: "+str(cls))
-            class_id = CLASS_MAPPING.get(class_name, 2)  # Default to 0 if not found
+            class_name = results.names[int(cls)]
+            class_id = CLASS_MAPPING.get(class_name, 0)  # Default to 0 if not found
 
             # Extract box coordinates
             x1, y1, x2, y2 = box
@@ -159,7 +158,6 @@ def run_detection(model, image_path):
             "detection_scores": np.array(scores, dtype=np.float32),
             "detection_boxes": np.array(boxes, dtype=np.float32),
         }
-        print("Mapped class IDs in detection_classes:", classes[:10])
 
         return output_dict
 
@@ -186,16 +184,16 @@ def save_outputs(output_dict):
     try:
         # Save annotated image
         cv2.imwrite(IMAGE_PATH_DETECTED, output_dict["image"])
-        print(f"Pfad:", IMAGE_PATH_DETECTED)
+
         # Save detection results to text file
-        file = open(TEXT_PATH_DETECTED, "w")
-        file.write("detection_classes\n")
-        file.write(str(output_dict["detection_classes"]))
-        file.write(" \ndetection_scores\n")
-        file.write(str(output_dict["detection_scores"]))
-        file.write("\ndetection_boxes\n")
-        file.write(str(output_dict["detection_boxes"]))
-        file.close()
+        with open(TEXT_PATH_DETECTED, "w") as file:
+            file.write("detection_classes\n")
+            file.write(str(output_dict["detection_classes"]))
+            file.write(" \ndetection_scores\n")
+            file.write(str(output_dict["detection_scores"]))
+            file.write("\ndetection_boxes\n")
+            file.write(str(output_dict["detection_boxes"]))
+
         logger.info(
             f"Detection results saved to {IMAGE_PATH_DETECTED} and {TEXT_PATH_DETECTED}"
         )
@@ -239,16 +237,10 @@ def main():
             # Check if the input image exists
             if os.path.isfile(IMAGE_PATH):
                 # Run detection
-                print("Erkennung gestratet")
-                start_time = time.time()
                 output_dict = run_detection(model, IMAGE_PATH)
 
                 # Save outputs
                 if save_outputs(output_dict):
-                    print("Erkennung gestratet")
-                    end_time = time.time()
-                    dauer = end_time - start_time
-                    print(f"Erkennung abgeschlossen in {dauer*1000:.2f} ms")
                     print("---------------------------------------------------")
                     print("Die Objekterkennung wurde erfolgreich durchgefuehrt")
                     print("---------------------------------------------------")

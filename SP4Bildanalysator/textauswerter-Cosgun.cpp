@@ -7,7 +7,7 @@ using std::endl;
 */
 Textauswerter::Textauswerter()
 {
-	cout << "Textauswerter Mansour" << endl;
+	cout << "Textauswerter Cosgun" << endl;
 }
 
 /**
@@ -19,7 +19,6 @@ Textauswerter::Textauswerter()
 */
 int Textauswerter::liesEin(QString datei)
 {
-
     QFile text (datei);
 
     if(!text.open(QIODevice::ReadOnly))
@@ -37,8 +36,7 @@ int Textauswerter::liesEin(QString datei)
     anzGlsnZeilen = 0;
     int erfolgreich = 0;
 
-//    while(datenstrom.readLineInto(&string,MAXLESEN))
-    while(datenstrom.readLineInto(&string))
+    while(datenstrom.readLineInto(&string,MAXLESEN))
     {
         anzGlsnZeilen++;
         if(anzGlsnZeilen > anzMaxZeilen+1)
@@ -48,19 +46,19 @@ int Textauswerter::liesEin(QString datei)
         }
         if (string.contains(DCLASS,Qt::CaseInsensitive))
         {
-
+            //cout << "bin bei detection classes " << endl;
             if (detection_classes(datei,anzGlsnZeilen)) erfolgreich++;
             //cout << erfolgreich << endl;
         }
         else if (string.contains(DSCORE,Qt::CaseInsensitive))
         {
-
+            //cout << "bin bei detection scores" << endl;
             if (detection_scores(datei,anzGlsnZeilen)) erfolgreich++;
             //cout << erfolgreich << endl;
         }
         else if (string.contains(DBOX,Qt::CaseInsensitive))
         {
-
+            //cout << "bin bei detection boxes" << endl;
             if (detection_boxes(datei,anzGlsnZeilen)){ erfolgreich++;}
             //cout << endl << erfolgreich << endl;
         }
@@ -194,7 +192,6 @@ std::tuple<double, double, double, double, double, double> Textauswerter::werteA
 
     // Den Index mit der höchstmöglichen Wahrscheinlichkeit ermitteln
     ziel = m[0];
-
     for (int i=1 ; i<mi ; i++ )
     {
         if(ergW[m[i]] > ergW[ziel])
@@ -217,8 +214,7 @@ std::tuple<double, double, double, double, double, double> Textauswerter::werteA
 
 
 /**
-* Diese Funktion sucht nacNot enough numbers in input line!
-h dem Schlüsselwort "detection_classes" in der Text-Datei und liest die Zahlen danach ein.
+* Diese Funktion sucht nach dem Schlüsselwort "detection_classes" in der Text-Datei und liest die Zahlen danach ein.
 * Diese Zahlen stellen die Klassen der Erkennungsergebnisse dar und werden in Arrays gespeichert dann entsprechend später bearbeitet.
 *
 * @version 1.0
@@ -337,65 +333,7 @@ int Textauswerter::detection_scores(QString datei, int aktlZeile)
 * @param [in] aktlZeile hat die Zeilennummer, an der der Cursor in der Schleife in {@link werteAus} steht, so dass diese Funktion ab da weiter einliest.
 * @return true, falls der Ablauf der Funktion reibungslos lief
 */
-//int Textauswerter::detection_boxes(QString datei, int aktlZeile)
-//{
-//    // Die Text-Datei erneuert öffnen
-//    QFile text (datei);
-//    text.open(QIODevice::ReadOnly);
-//    QTextStream datenstrom(&text);
-//    QString linie;
-//    int cursor=0,laenge=10,anzZeilen=0,anzZeichen=4;
-
-//    // Den Cursor auf die aktuelle Zeile bringen
-//    for (int n=0 ; n<aktlZeile ; n++) {datenstrom.readLineInto(&linie,MAXLESEN);}
-//    // Hier die gewünschten Daten einlesen
-//    do
-//    {
-//        // Weitere Zeile einlesen
-//        datenstrom.readLineInto(&linie,MAXLESEN);
-//        aktlZeile++;
-//        //cout << "detection boxes Aktuelle Zeile " << aktlZeile << "/" << anzMaxZeilen << endl;
-//        if(aktlZeile > anzMaxZeilen+1)
-//        {
-//            //cout << "detection boxes Fehler" << endl;
-//            text.close();
-//            return 0;
-//        }
-//        // Ausgabe des Inhalts der aktuellen Zeile
-
-//        // Die Zahlen (Koordinaten) in das Array ergB[] einschreiben
-//        for (int i=0 ; i<anzZeichen ; i++)
-//        {
-//            cursor = linie.indexOf('.') - 1;
-//            if (i==0)
-//            {
-//                ergB[anzZeilen].a = linie.mid(cursor,laenge).toDouble();
-//            }
-//            else if (i==1)
-//            {
-//                ergB[anzZeilen].b = linie.mid(cursor,laenge).toDouble();
-//            }
-//            else if (i==2)
-//            {
-//                ergB[anzZeilen].c = linie.mid(cursor,laenge).toDouble();
-//            }
-//            else if (i==3)
-//            {
-//                ergB[anzZeilen].d = linie.mid(cursor,laenge).toDouble();
-//            }
-//            linie = linie.mid(laenge);
-//        }
-
-//        // Variable zur Erhöhung der Anzahl des Indexes beim Einlesen neuer Zeilen
-//        anzZeilen++;
-//    }
-//    while(!linie.contains("]]"));
-//    // Die Text-Datei schließen
-//    text.close();
-//    // Rückgabe
-//    return true;
-//}
-int Textauswerter::detection_boxes(QString datei, int aktlZeile) // Neue Funktion stand 23.07 @ Mohamed Aziz Mansour & Herr WElp
+int Textauswerter::detection_boxes(QString datei, int aktlZeile)
 {
     // Die Text-Datei erneuert öffnen
     QFile text (datei);
@@ -405,55 +343,55 @@ int Textauswerter::detection_boxes(QString datei, int aktlZeile) // Neue Funktio
     int cursor=0,laenge=10,anzZeilen=0,anzZeichen=4;
 
     // Den Cursor auf die aktuelle Zeile bringen
-
-    for (int n=0 ; n<aktlZeile ; n++) {datenstrom.readLineInto(&linie);}
+    for (int n=0 ; n<aktlZeile ; n++) {datenstrom.readLineInto(&linie,MAXLESEN);}
     // Hier die gewünschten Daten einlesen
-    while(datenstrom.readLineInto(&linie)) // Abruch Bedingung
+    do
     {
-
-
-        if(anzZeilen==0)
-            linie.remove('[');
-
+        // Weitere Zeile einlesen
+        datenstrom.readLineInto(&linie,MAXLESEN);
         aktlZeile++;
-
+        //cout << "detection boxes Aktuelle Zeile " << aktlZeile << "/" << anzMaxZeilen << endl;
         if(aktlZeile > anzMaxZeilen+1)
         {
-
+            //cout << "detection boxes Fehler" << endl;
             text.close();
             return 0;
         }
+        // Ausgabe des Inhalts der aktuellen Zeile
 
-
-
-        // Remove square brackets and extra spaces
-        linie.remove('[').remove(']');
-        linie = linie.simplified();  // removes multiple spaces
-
-        // Split the string by space
-        QStringList parts = linie.split(' ');
-
-        // Convert the first 4 parts to double
-        if (parts.size() >= 4) {
-            ergB[anzZeilen].a = parts[0].toDouble();
-            ergB[anzZeilen].b = parts[1].toDouble();
-            ergB[anzZeilen].c = parts[2].toDouble();
-            ergB[anzZeilen].d = parts[3].toDouble();
-
-        } else {
-            qWarning("Not enough numbers in input line!");
+        // Die Zahlen (Koordinaten) in das Array ergB[] einschreiben
+        for (int i=0 ; i<anzZeichen ; i++)
+        {
+            cursor = linie.indexOf('.') - 1;
+            if (i==0)
+            {
+                ergB[anzZeilen].a = linie.mid(cursor,laenge).toDouble();
+            }
+            else if (i==1)
+            {
+                ergB[anzZeilen].b = linie.mid(cursor,laenge).toDouble();
+            }
+            else if (i==2)
+            {
+                ergB[anzZeilen].c = linie.mid(cursor,laenge).toDouble();
+            }
+            else if (i==3)
+            {
+                ergB[anzZeilen].d = linie.mid(cursor,laenge).toDouble();
+            }
+            linie = linie.mid(laenge);
         }
-
 
         // Variable zur Erhöhung der Anzahl des Indexes beim Einlesen neuer Zeilen
         anzZeilen++;
     }
-
+    while(!linie.contains("]]"));
     // Die Text-Datei schließen
     text.close();
     // Rückgabe
     return true;
 }
+
 /**
 * Destruktor
 */

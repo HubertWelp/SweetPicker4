@@ -8,6 +8,7 @@ build*/
 SP4Objekterkenner/venv_SP4Objekterkenner/
 SP4Objekterkenner/trained-inference-graphs/
 SP4Objekterkenner/sweet_detector.pt
+SP4Objekterkenner/best_yolo11s.pt
 
 
 Trainingsdaten-bunt/

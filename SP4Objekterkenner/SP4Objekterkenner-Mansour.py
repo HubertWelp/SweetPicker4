@@ -126,8 +126,7 @@ def run_detection(model, image_path):
         ):
             # Get class name and map to standardized IDs
             class_name = results.names[int(cls)].lower()
-            print("Klasse: "+str(cls))
-            class_id = CLASS_MAPPING.get(class_name, 2)  # Default to 0 if not found
+            class_id = CLASS_MAPPING.get(class_name, 0)  # Default to 0 if not found
 
             # Extract box coordinates
             x1, y1, x2, y2 = box

@@ -20,7 +20,7 @@ int Kamera::nehmeAuf(const char* pfad)
     // Open camera for this shot
     if(!videostream.open(id))
     {
-        std::cerr << "Kamera konnte nicht geoeffnet werden (ID )" << id << ")\n";
+        std::cerr << "Kamera konnte nicht geoeffnet werden (ID " << id << ")\n";
         return -1;
     }
 
@@ -44,8 +44,10 @@ int Kamera::nehmeAuf(const char* pfad)
         videostream.release();
         return -2;
     }
+    cv::Mat out;
+    bild.convertTo(out,-1,1.1,15);
     // Das Bild im angegebenen Pfad Speichern
-    if( !cv::imwrite(ziel,bild) )
+    if( !cv::imwrite(ziel,out) )
     {
         std::cerr << "Bild konnte nicht am Ziel gespeichert werden\n";
         videostream.release();
@@ -76,6 +78,11 @@ void Kamera::nehmeAufTest(const char *pfad)
  */
 int Kamera::setzeKameraID(int idnew)
 {
+
+  std::cout << "setzeKameraID " << idnew << " (alte ID " << id << ")\n";
+  if(idnew == id)
+    return 0;
+
   // Probe first to avoid breaking the existing camera if new ID is invalid.
   cv::VideoCapture probe;
   if (!probe.open(idnew, backend_)) {
