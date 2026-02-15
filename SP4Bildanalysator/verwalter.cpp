@@ -113,6 +113,7 @@ void Verwalter::messageReceived(std::string msg)
             sendmessage(ergebnis,ipAdressSPKoordinator,5843);
             return;
         }
+        cam->setzeGamma(konfig->getGamma());
         cam->nehmeAuf(pfad);
 //        cam->nehmeAufTest(pfad);
         delete [] pfad;

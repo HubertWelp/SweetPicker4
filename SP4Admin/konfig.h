@@ -97,6 +97,16 @@ public:
     */
     int getKameraID();
 
+    /** @brief Gibt eine Gamma-Wert für die Helligkeitsanpassung aus
+    *
+    * Diese Methode gibt den momentan gespeicherten gamma-Wert aus der konfig.ini Datei aus. Hiermit wird die
+    * Helligkeit des aufgenommenen Bildes angepasst. Gamma-Werte kleiner als 1.0 liefern hellere Bilder.
+    * Gamma-Werte größer als 1.0 liefern dunklere Bilder
+    *
+    * @return  Gibt eine Zahl als KameraID aus. Fall das Auslesen nicht erfolgreich ist, wird -1 ausgegeben.
+    */
+    double getGamma();
+
 
 protected:
     QString dateipfad;
@@ -189,6 +199,18 @@ public:
     */
     int setKameraID(int input);
 
+
+    /** @brief Speichert den übergebenen Gamma-Wert ab.
+    *
+    * Diese Methode speichert den übergebenen Wert in der konfig.ini Datei unter dem Schlüssel "gamma" ab.
+    *
+    * @param [in] input gebrochener Wert zwischen 0.5 und 1.5
+    *
+    * @return   0, wenn erfolgreich
+    *           -1, wenn nicht erfolgreich
+    *
+    */
+    int setGamma(double input);
 private:
 
 };

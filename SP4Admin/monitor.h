@@ -63,6 +63,15 @@ public slots:
     */
     void kameraIDZuruecksetzen();
 
+    /** @brief Setzt den Gamma-Wert auf den vorherigen Gamme-Wert zurück
+    *
+    * Diese Methode setzt den Wert der zu speichernden Gamma-Wert auf den vorherigen Wert zurück
+    *
+    * @return  void
+    *
+    */
+    void gammaZuruecksetzen();
+
     /** @brief Setzt die Rahmendicke auf die vorherige Rahmendicke zurück
     *
     * Diese Methode setzt den Wert der zu speichernden Rahmendicke auf den vorherigen Wert zurück
@@ -121,6 +130,7 @@ public slots:
     */
     void resizeEvent(QResizeEvent*) override;
 
+
 private:
     Ui::Monitor *ui;
 
@@ -129,6 +139,7 @@ private:
     int previousBildbreite;
     int previousBildhoehe;
     int previousKameraID;
+    double previousGamma;
     int previousRahmendicke;
     QColor previousRahmenfarbe;
     QColor nextRahmenfarbe;

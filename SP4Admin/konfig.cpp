@@ -130,6 +130,23 @@ int Konfig::getKameraID()
     return c;
 }
 
+double Konfig::getGamma()
+{
+  double g=1.0;
+  QSettings settings(dateipfad,QSettings::IniFormat);
+  settings.beginGroup("Kamera");
+  if(settings.contains("gamma") && settings.status()==0)
+  {
+      g = settings.value("gamma").toDouble();
+  }
+  else
+  {
+    g = -1.0;
+  }
+  settings.endGroup();
+  return g;
+}
+
 
 KonfigAdmin::KonfigAdmin(QString pfad)
 {
@@ -197,10 +214,20 @@ int KonfigAdmin::setBildhoehe(int input)
 
 int KonfigAdmin::setKameraID(int input)
 {
-    QSettings settings(dateipfad,QSettings::IniFormat);
-    settings.beginGroup("Kamera");
-    settings.setValue("id",input);
-    settings.endGroup();
-    if(settings.status()==0) return 0;
-    else return -1;
+  QSettings settings(dateipfad,QSettings::IniFormat);
+  settings.beginGroup("Kamera");
+  settings.setValue("id",input);
+  settings.endGroup();
+  if(settings.status()==0) return 0;
+  else return -1;
+}
+
+int KonfigAdmin::setGamma(double input)
+{
+  QSettings settings(dateipfad,QSettings::IniFormat);
+  settings.beginGroup("Kamera");
+  settings.setValue("gamma",input);
+  settings.endGroup();
+  if(settings.status()==0) return 0;
+  else return -1;
 }

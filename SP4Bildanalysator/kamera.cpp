@@ -4,6 +4,7 @@ Kamera::Kamera(const char* pfad)
 {
     pwd = pfad;
     id = 0;
+    gamma = 1.0;
 ///    videostream = cv::VideoCapture (id); // 0 = standardkamera
 }
 /**
@@ -45,7 +46,8 @@ int Kamera::nehmeAuf(const char* pfad)
         return -2;
     }
     cv::Mat out;
-    bild.convertTo(out,-1,1.1,15);
+    //bild.convertTo(out,-1,1.1,15);
+    out = gammaCorrect(bild,gamma);
     // Das Bild im angegebenen Pfad Speichern
     if( !cv::imwrite(ziel,out) )
     {
@@ -108,4 +110,32 @@ int Kamera::setzeKameraID(int idnew)
   id = idnew;
 
   return 0;
+}
+
+int Kamera::setzeGamma(double g)
+{
+  if(g>0.5 && g<1.5)
+  {
+    std::cout << "setzeGamma: " << g << std::endl;
+    gamma = g;
+    return 0;
+  }else
+  {
+    std::cout << "setzeGamma: out of range" << std::endl;
+    return -1;
+
+  }
+}
+
+cv::Mat Kamera::gammaCorrect(const cv::Mat &image, double gamma)
+{
+  CV_Assert(gamma>0.0);
+  cv::Mat out;
+  cv::Mat lut(1,256,CV_8U);
+  for (int i=0;i<256;++i)
+  {
+    lut.at<uchar>(i) = cv::saturate_cast<uchar>(std::pow(i/255.0,gamma)*255.0);
+  }
+  cv::LUT(image,lut,out);
+  return out;
 }

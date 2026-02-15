@@ -15,6 +15,7 @@ Monitor::Monitor(QWidget *parent) :
     previousBildbreite = k.getBildbreite();
     previousBildhoehe = k.getBildhoehe();
     previousKameraID = k.getKameraID();
+    previousGamma = k.getGamma();
     previousRahmendicke = k.getRahmendicke();
     previousRahmenfarbe = k.getRahmenfarbe();
 
@@ -22,6 +23,7 @@ Monitor::Monitor(QWidget *parent) :
     ui->spinBox_erode->setValue(previousBildbreite);
     ui->spinBox_dillate->setValue(previousBildhoehe);
     ui->spinBox_kameraID->setValue(previousKameraID);
+    ui->doubleSpinBox_gamma->setValue(previousGamma);
     ui->spinBox_rahmendicke->setValue(previousRahmendicke);
 
     // Die Farbe des Druckknopfes zur Farbpalette einfärben
@@ -43,6 +45,7 @@ void Monitor::parameterSpeichern()
         k.setBildbreite(ui->spinBox_erode->value()) ||
         k.setBildhoehe(ui->spinBox_dillate->value()) ||
         k.setKameraID(ui->spinBox_kameraID->value()) ||
+        k.setGamma(ui->doubleSpinBox_gamma->value()) ||
         k.setRahmenfarbe(nextRahmenfarbe)  ||
         k.setRahmendicke(ui->spinBox_rahmendicke->value()) == 0
         )
@@ -51,6 +54,7 @@ void Monitor::parameterSpeichern()
         previousBildbreite = ui->spinBox_erode->value();
         previousBildhoehe = ui->spinBox_dillate->value();
         previousKameraID = ui->spinBox_kameraID->value();
+        previousGamma = ui->doubleSpinBox_gamma->value();
         previousRahmendicke = ui->spinBox_rahmendicke->value();
         previousRahmenfarbe = nextRahmenfarbe;
         QMessageBox::information(this,"Parameter speichern","Parameter erfolgreich gespeichert");
@@ -71,7 +75,13 @@ void Monitor::dillateZuruecksetzen()
 
 void Monitor::kameraIDZuruecksetzen()
 {
-    ui->spinBox_kameraID->setValue(previousKameraID);
+  ui->spinBox_kameraID->setValue(previousKameraID);
+}
+
+void Monitor::gammaZuruecksetzen()
+{
+  ui->doubleSpinBox_gamma->setValue(previousGamma);
+
 }
 
 void Monitor::rahmendickeZuruecksetzen()
@@ -138,3 +148,5 @@ void Monitor::zeichneInfo()
     ui->lineEdit_breite->setText(QString::number(info.getBreite())+" mm");
     ui->lineEdit_orientierung->setText(QString::number(info.getWinkel())+"°");
 }
+
+
