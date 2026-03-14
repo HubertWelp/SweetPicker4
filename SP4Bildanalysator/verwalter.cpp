@@ -1,5 +1,5 @@
 #include "verwalter.h"
-#define DEBUG
+//#define TEST
 Verwalter::Verwalter(string ipSPKoordinator)
   : ipAdressSPKoordinator(ipSPKoordinator)
 {
@@ -106,8 +106,8 @@ void Verwalter::messageReceived(std::string msg)
         char pfad[256];
         strcpy(pfad,ressourcen::PWD.c_str());
         strcat(pfad,BILD);
-#ifndef DEBUG
-        if(cam->setzeKamerID(konfig->getKameraID())!=0)
+#ifndef TEST
+        if(cam->setzeKameraID(konfig->getKameraID())!=0)
         {
             string ergebnis="Fehler";
             std::cout << ergebnis << std::endl;
