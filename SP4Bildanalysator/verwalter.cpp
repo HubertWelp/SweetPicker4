@@ -1,5 +1,5 @@
 #include "verwalter.h"
-
+#define DEBUG
 Verwalter::Verwalter(string ipSPKoordinator)
   : ipAdressSPKoordinator(ipSPKoordinator)
 {
@@ -103,20 +103,22 @@ void Verwalter::messageReceived(std::string msg)
         // altes Bild und alte Ergebnisse löschen
         loescheAlt();
         // aktuelles Bild aufnehmen und im folgenden relativen Verzeichnis ablegen
-        char* pfad = new char [256];
+        char pfad[256];
         strcpy(pfad,ressourcen::PWD.c_str());
         strcat(pfad,BILD);
-        if(cam->setzeKameraID(konfig->getKameraID())!=0)
+#ifndef DEBUG
+        if(cam->setzeKamerID(konfig->getKameraID())!=0)
         {
-            string ergebnis="fehler";
+            string ergebnis="Fehler";
             std::cout << ergebnis << std::endl;
             sendmessage(ergebnis,ipAdressSPKoordinator,5843);
             return;
         }
         cam->setzeGamma(konfig->getGamma());
         cam->nehmeAuf(pfad);
-//        cam->nehmeAufTest(pfad);
-        delete [] pfad;
+#else
+        cam->nehmeAufTest(pfad);
+#endif
         // Ein Python-Skript vom SP3Objekterkenner ausführen (python programmname TEXTABLAGE wahl)
         fuehreSkriptAus();
         // warten, bis SP3Objektereknner  fertig ist
@@ -152,7 +154,7 @@ void Verwalter::messageReceived(std::string msg)
                 }
                 ausschnittErgebnis.close();
                 //Sende Nachrichtenstring für den Roboter
-                std::cout << ergebnis << std::endl;
+                std::cout << "to SP4Koordinator: " << ergebnis << std::endl;
                 //sendmessage(ergebnis,"192.168.188.20",5843);
                 sendmessage(ergebnis,ipAdressSPKoordinator,5843);
 
