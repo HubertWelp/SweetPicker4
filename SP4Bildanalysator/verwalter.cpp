@@ -117,6 +117,7 @@ void Verwalter::messageReceived(std::string msg)
         cam->setzeGamma(konfig->getGamma());
         cam->nehmeAuf(pfad);
 #else
+        cam->setzeGamma(konfig->getGamma());
         cam->nehmeAufTest(pfad);
 #endif
         // Ein Python-Skript vom SP3Objekterkenner ausführen (python programmname TEXTABLAGE wahl)

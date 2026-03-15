@@ -68,7 +68,9 @@ void Kamera::nehmeAufTest(const char *pfad)
     cv::String ziel = cv::String (pwd) + cv::String(pfad);
     ziel = cv::String(pfad);
     bild = cv::imread("/home/student/git/SP4/SweetPicker4/Trainingsdaten-bunt/2.jpg");
-    if( !cv::imwrite(ziel,bild) )
+    cv::Mat out;
+    out = gammaCorrect(bild,gamma);
+    if( !cv::imwrite(ziel,out) )
     {
         printf("Bild konnte nicht am Ziel gespeichert werden\n");
     }
