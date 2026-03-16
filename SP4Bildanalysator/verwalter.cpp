@@ -150,8 +150,8 @@ void Verwalter::messageReceived(std::string msg)
                 }
                 else
                 {
-                    ergebnis = std::to_string(xMittelpunkt) + " " + std::to_string(-yMittelpunkt) + " " + std::to_string(0) + " " + std::to_string(winkel) + " " + std::to_string(breite);
-                    ausschnittErgebnis << msg << ";" << winkel << ";" << breite << ";" << xMittelpunkt << ";" << -yMittelpunkt;
+                    ergebnis = std::to_string(xMittelpunkt/1000.0) + " " + std::to_string(yMittelpunkt/1000.0) + " " + std::to_string(0) + " " + std::to_string(winkel) + " " + std::to_string(breite);
+                    ausschnittErgebnis << msg << ";" << winkel << ";" << breite << ";" << xMittelpunkt << ";" << yMittelpunkt;
                 }
                 ausschnittErgebnis.close();
                 //Sende Nachrichtenstring für den Roboter
